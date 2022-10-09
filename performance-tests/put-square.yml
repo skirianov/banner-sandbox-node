@@ -1,0 +1,31 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 50
+      name: Ramp up load
+    - duration: 240
+      arrivalRate: 50
+      name: Sustained load
+
+scenarios:
+  - name: "Put square"
+    flow:
+      - put:
+          url: "/squares/0,0"
+          json: {
+            "_id": "634320c4bd32bc586e629717",
+            "x": 84,
+            "y": 48,
+            "id": "84,48",
+            "color": "#d61d1d",
+            "old_color": "#d61d1d",
+            "status": "unpainted",
+            "owner": "sergii",
+            "__v": 0
+          }
+            
