@@ -5,7 +5,7 @@ const Square = require('../db/schema');
 const { convertImageFromArray, createImageFromBuffer } = require('../utils/convertImage');
 const path = require('path');
 
-const job = nodeCron.schedule('* * * */2 * *', async () => {
+const job = nodeCron.schedule('*/20 * * * *', async () => {
   console.log('running a task every 20 minutes');
 
   const squares = await Square.find({});
