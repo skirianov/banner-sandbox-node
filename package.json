@@ -4,7 +4,8 @@
   "description": "BE for Banner Sandbox",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "npm install && npm start"
   },
   "author": "",
   "license": "ISC",
