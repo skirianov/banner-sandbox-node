@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const CONNECT_WITH_MONGO = () => {
-  const MONGODB = process.env.MONGODB_TEST;
+  const MONGODB = process.env.MONGODB;
 
   mongoose.connect(MONGODB);
   const db = mongoose.connection;
