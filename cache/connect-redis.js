@@ -1,7 +1,7 @@
 const redis = require('redis');
 
 const redisClient = redis.createClient({
-  host: process.env.REDIS_HOST || '127.0.0.1',
+  host: 'redis.ptzrgx.ng.0001.use2.cache.amazonaws.com',
   port: process.env.REDIS_PORT || 6379,
 });
 
