@@ -4,7 +4,7 @@ let ws;
 
 module.exports = {
   init: server => {
-    ws = new WebSocketServer({ server });
+    ws = new WebSocketServer({ server, port: 3001 });
     return ws;
   },
   getWS: () => {
