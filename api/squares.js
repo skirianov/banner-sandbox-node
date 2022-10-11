@@ -21,6 +21,10 @@ routes.get('/squares', async(req, res) => {
     console.log(error);
   }
 
+  squares.forEach(each => {
+    each.old_color = each.color;
+  })
+
   res.send(squares);
 });
 
