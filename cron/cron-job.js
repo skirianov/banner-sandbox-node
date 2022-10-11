@@ -17,15 +17,14 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
   
   const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
 
-  console.log(banner);
-
-  // uncomment this to tweet
-  // try {
-  //   await twitterClient.v1.updateAccountProfileBanner(banner, {
-  //     offset_left: 0,
-  //     offset_top: 0,
-  //   })
-  // } catch (error) {
-  //   console.log(error);
-  // }
+  try {
+    await twitterClient.v1.updateAccountProfileBanner(banner, {
+      offset_left: 0,
+      offset_top: 0,
+    })
+  } catch (error) {
+    console.log(error);
+  }
 });
+
+module.exports = { job };
