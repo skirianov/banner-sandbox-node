@@ -11,12 +11,11 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 
   const squares = await Square.find({});
 
-  const time = new Date();
+  const time = moment().format('YYYY-MM-DD HH:mm:ss');
   const lastUpdate = LastUpdate.findOne({});
 
   // if last update is less than 15 minutes ago, create image and tweet
-
-  if (time - lastUpdate.lastUpdate < 900000) {
+  if (moment(time).diff(lastUpdate.lastUpdate, 'minutes') > 15) {
     const imageBuffer = convertImageFromArray(squares);
     createImageFromBuffer(imageBuffer, '../assets/banner.png');
 
@@ -42,12 +41,11 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   console.log('saving banner');
 
-  const time = new Date();
+  const time = moment().format('YYYY-MM-DD HH:mm:ss');
   const lastUpdate = LastUpdate.findOne({});
 
   // if last update is less than 4 minutes ago, create image and tweet
-
-  if (time - lastUpdate.lastUpdate < 240000) {
+  if (moment(time).diff(lastUpdate.lastUpdate, 'minutes') > 4) {
     const squares = await Square.find({});
     const imageBuffer = convertImageFromArray(squares);
     const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');

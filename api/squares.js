@@ -9,7 +9,7 @@ routes.get('/squares', async(req, res) => {
 
   const lastUpdate = LastUpdate.findOne({});
 
-  console.log(lastUpdate)
+  console.log(lastUpdate.lastUpdate)
 
   try {
     const cachedSquares = await redisClient.get('squares');
