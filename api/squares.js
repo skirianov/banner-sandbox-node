@@ -30,11 +30,10 @@ routes.put('/squares/:id', async(req, res) => {
 
   let square = await Square.findOne({ id });
 
+  square.old_color = color | square.color;
   square.color = color;
   square.owner = owner;
-  square.old_color = color;
 
-  console.log(square);
   await square.save();
 
   const cachedSquares = await redisClient.get('squares');
