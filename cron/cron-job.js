@@ -11,7 +11,7 @@ const job = nodeCron.schedule('*/30 * * * *', async () => {
   const squares = await Square.find({});
   
   const imageBuffer = convertImageFromArray(squares);
-  await createImageFromBuffer(imageBuffer);
+  createImageFromBuffer(imageBuffer);
 
   console.log('image created');
   
