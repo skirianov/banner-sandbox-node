@@ -19,10 +19,12 @@ const job = nodeCron.schedule('*/30 * * * *', async () => {
   const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
 
   try {
-    await twitterClient.v1.updateAccountProfileBanner(banner, {
+    const twitterResponse = await twitterClient.v1.updateAccountProfileBanner(banner, {
       offset_left: 0,
       offset_top: 0,
     })
+
+    console.log(twitterResponse);
   } catch (error) {
     console.log(error);
   }
