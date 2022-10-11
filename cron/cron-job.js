@@ -10,20 +10,26 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
   console.log('running a task every 20 minutes');
 
   const squares = await Square.find({});
-  const lastUpdatedSquares = await LastUpdatedSquares.findOne({}).squares;
+  const lastUpdatedSquares = await LastUpdatedSquares.find({});
+  const lastUpdatedSquaresArray = lastUpdatedSquares[0].squares;
 
   //compare squares and lastUpdatedSquares
-  const updatedSquares = squares.filter((square, index) => {
-    return square.color !== lastUpdatedSquares[index].color;
+  const changedSquares = squares.filter((square, index) => {
+    return square.color !== lastUpdatedSquaresArray[index].color;
   });
 
-  if (updatedSquares.length > 0) {
+  if (changedSquares.length > 0) {
     const imageBuffer = convertImageFromArray(squares);
     createImageFromBuffer(imageBuffer, '../assets/banner.png');
   
-    console.log('image created');
+    console.log('new banner created and submitted to Twitter');
     
     const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
+
+    const lastUpdatedSquares = await LastUpdatedSquares.find({});
+    lastUpdatedSquares[0].squares = squares;
+
+    await lastUpdatedSquares[0].save();
   
     try {
       const twitterResponse = await twitterClient.v1.updateAccountProfileBanner(banner, {
@@ -42,21 +48,21 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 
 const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   const squares = await Square.find({});
-
-  const lastUpdatedSquares = await LastUpdatedSquares.findOne({}).squares;
+  const lastUpdatedSquares = await LastUpdatedSquares.find({});
+  const lastUpdatedSquaresArray = lastUpdatedSquares[0].squares;
 
   //compare squares and lastUpdatedSquares
-  const updatedSquares = squares.filter((square, index) => {
-    return square.color !== lastUpdatedSquares[index].color;
+  const changedSquares = squares.filter((square, index) => {
+    return square.color !== lastUpdatedSquaresArray[index].color;
   });
 
-  if (updatedSquares.length > 0) {
+  if (changedSquares.length > 0) {
     const imageBuffer = convertImageFromArray(squares);
     const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
   
     createImageFromBuffer(imageBuffer, '../assets/progress' + currentTime + '.png');
 
-    console.log('image created');
+    console.log('new history image saved' + currentTime);
   } else {
     console.log('no changes');
   }
@@ -67,4 +73,4 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
 
 //   const squaresFromJson = fs.readFileSync(path.join(__dirname, 'squares.json'));
 
-module.exports = { job, saveBanner };
+module.exports = { job };

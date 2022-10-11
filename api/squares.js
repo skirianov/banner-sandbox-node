@@ -40,17 +40,17 @@ routes.put('/squares/:id', async(req, res) => {
 
   await square.save();
 
-  let lastUpdatedSquares = await LastUpdatedSquares.findOne({});
-
   const cachedSquares = await redisClient.get('squares');
   const squares = JSON.parse(cachedSquares);
 
   const index = squares.findIndex(square => square.id === id);
   squares[index] = square;
 
-  lastUpdatedSquares.squares = squares;
+  const lastUpdatedSquares = await LastUpdatedSquares.find({});
+  lastUpdatedSquares[0].squares = squares;
 
-  await lastUpdatedSquares.save();
+  await lastUpdatedSquares[0].save();
+
   await redisClient.set('squares', JSON.stringify(squares));
 
   console.log('store to db and cache');
