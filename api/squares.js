@@ -6,6 +6,10 @@ const routes = require('express').Router();
 routes.get('/squares', async(req, res) => {
   let squares;
 
+  const lastUpdate = LastUpdate.findOne({});
+
+  console.log(lastUpdate)
+
   try {
     const cachedSquares = await redisClient.get('squares');
 
@@ -41,7 +45,6 @@ routes.put('/squares/:id', async(req, res) => {
   await square.save();
 
   const time = new Date();
-
 
   const cachedSquares = await redisClient.get('squares');
   const squares = JSON.parse(cachedSquares);
