@@ -21,12 +21,6 @@ routes.get('/squares', async(req, res) => {
     console.log(error);
   }
 
-  squares.forEach(each => {
-    each.old_color = each.color;
-  })
-
-  Square.insertMany(squares);
-
   res.send(squares);
 });
 
