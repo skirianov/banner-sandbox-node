@@ -73,4 +73,4 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
 
 //   const squaresFromJson = fs.readFileSync(path.join(__dirname, 'squares.json'));
 
-module.exports = { job };
+module.exports = { job, saveBanner };
