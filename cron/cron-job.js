@@ -4,6 +4,7 @@ const { twitterClient } = require('../api/twitter');
 const Square = require('../db/schema');
 const { convertImageFromArray, createImageFromBuffer } = require('../utils/convertImage');
 const path = require('path');
+const momemnt = require('moment');
 
 const job = nodeCron.schedule('*/30 * * * *', async () => {
   console.log('running a task every 30 minutes');
@@ -11,7 +12,7 @@ const job = nodeCron.schedule('*/30 * * * *', async () => {
   const squares = await Square.find({});
   
   const imageBuffer = convertImageFromArray(squares);
-  createImageFromBuffer(imageBuffer);
+  createImageFromBuffer(imageBuffer, '../assets/banner.png');
 
   console.log('image created');
   
@@ -27,4 +28,14 @@ const job = nodeCron.schedule('*/30 * * * *', async () => {
   }
 });
 
-module.exports = { job };
+const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
+  console.log('saving banner');
+
+  const squares = await Square.find({});
+  const imageBuffer = convertImageFromArray(squares);
+  const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
+
+  createImageFromBuffer(imageBuffer, '../assets/progress/' + currentTime + '.png');
+})
+
+module.exports = { job, saveBanner };
