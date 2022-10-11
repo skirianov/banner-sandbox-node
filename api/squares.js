@@ -46,11 +46,13 @@ routes.put('/squares/:id', async(req, res) => {
   const index = squares.findIndex(square => square.id === id);
   squares[index] = square;
 
-  const lastUpdatedSquares = new LastUpdatedSquares({
-    squares: squares
+  LastUpdatedSquares.findOneAndReplace({}, { squares }, { upsert: true }, (err, doc) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('LastUpdatedSquares updated');
+    }
   });
-
-  await lastUpdatedSquares[0].save();
 
   await redisClient.set('squares', JSON.stringify(squares));
 
