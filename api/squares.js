@@ -32,6 +32,7 @@ routes.put('/squares/:id', async(req, res) => {
 
   square.color = color;
   square.owner = owner;
+  square.old_color = color;
 
   console.log(square);
   await square.save();
