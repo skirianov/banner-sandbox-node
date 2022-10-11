@@ -11,14 +11,6 @@ const squareSchema = new Schema({
   owner: String
 });
 
-const lastUpdateSchema = new Schema({
-  lastUpdate: Date
-});
-
 const Square = mongoose.model('Square', squareSchema);
-const LastUpdate = mongoose.model('LastUpdate', lastUpdateSchema);
 
-module.exports = {
-  Square,
-  LastUpdate
-}
+module.exports = Square;

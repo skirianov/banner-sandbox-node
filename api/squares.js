@@ -1,15 +1,10 @@
 const { redisClient } = require('../cache/connect-redis');
-const { Square, LastUpdate } = require('../db/schema');
-const moment = require('moment');
+const Square = require('../db/schema');
 
 const routes = require('express').Router();
 
 routes.get('/squares', async(req, res) => {
   let squares;
-
-  const lastUpdate = LastUpdate.findOne({});
-
-  console.log(lastUpdate.lastUpdate)
 
   try {
     const cachedSquares = await redisClient.get('squares');
@@ -44,9 +39,6 @@ routes.put('/squares/:id', async(req, res) => {
   square.owner = owner;
 
   await square.save();
-
-  const time = moment().format('YYYY-MM-DD HH:mm:ss');
-  LastUpdate.insertMany({ lastUpdate: time });
 
   const cachedSquares = await redisClient.get('squares');
   const squares = JSON.parse(cachedSquares);
