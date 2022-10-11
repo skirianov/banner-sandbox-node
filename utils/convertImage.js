@@ -58,7 +58,7 @@ const convertHEXtoRGB = (hex) => {
   return [r, g, b];
 }
 
-const createImageFromBuffer = (buffer) => {
+const createImageFromBuffer = async (buffer) => {
   const png = new pngjs.PNG({
     width: 1500,
     height: 504,
@@ -68,7 +68,7 @@ const createImageFromBuffer = (buffer) => {
 
   const bufferStream = png.pack();
 
-  const writeStream = fs.createWriteStream(path.join(__dirname, '../assets/banner.png'));
+  const writeStream = await fs.createWriteStream(path.join(__dirname, '../assets/banner.png'));
 
   bufferStream.pipe(writeStream);
 }
