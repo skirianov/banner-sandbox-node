@@ -6,8 +6,8 @@ const { convertImageFromArray, createImageFromBuffer } = require('../utils/conve
 const path = require('path');
 const moment = require('moment');
 
-const job = nodeCron.schedule('*/30 * * * *', async () => {
-  console.log('running a task every 30 minutes');
+const job = nodeCron.schedule('*/10 * * * *', async () => {
+  console.log('running a task every 10 minutes');
 
   const squares = await Square.find({});
   
