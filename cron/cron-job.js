@@ -4,7 +4,7 @@ const { twitterClient } = require('../api/twitter');
 const Square = require('../db/schema');
 const { convertImageFromArray, createImageFromBuffer } = require('../utils/convertImage');
 const path = require('path');
-const momemnt = require('moment');
+const moment = require('moment');
 
 const job = nodeCron.schedule('*/30 * * * *', async () => {
   console.log('running a task every 30 minutes');
