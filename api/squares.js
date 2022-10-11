@@ -53,7 +53,7 @@ routes.put('/squares/:id', async(req, res) => {
       console.log('LastUpdatedSquares updated');
     }
   });
-
+  
   await redisClient.set('squares', JSON.stringify(squares));
 
   console.log('store to db and cache');
