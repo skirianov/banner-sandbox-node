@@ -41,21 +41,24 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   createImageFromBuffer(imageBuffer, '../assets/progress' + currentTime + '.png');
 })
 
-const compareSquares = nodeCron.schedule('*/2 * * * *', async () => {
-  console.log('comparing squares');
+// const compareSquares = nodeCron.schedule('*/2 * * * *', async () => {
+//   console.log('comparing squares');
 
-  const squaresFromJson = fs.readFileSync(path.join(__dirname, 'squares.json'));
-  const squaresJSON = JSON.parse(squaresFromJson);
+//   const squaresFromJson = fs.readFileSync(path.join(__dirname, 'squares.json'));
+//   const squaresJSON = JSON.parse(squaresFromJson);
 
-  console.log(squaresJSON)
-});
+//   console.log(squaresJSON)
+// });
 
-const squareData = nodeCron.schedule('*/1 * * * *', async () => {
-  console.log('saving data in json');
+// const squareData = nodeCron.schedule('*/1 * * * *', async () => {
+//   console.log('saving data in json');
 
-  const squaresJson = JSON.stringify(squares);
-  fs.writeFileSync('squares.json', squaresJson);
-})
+//   const squaresJson = JSON.stringify(squares);
+//   fs.writeFileSync('squares.json', squaresJson);
+// })
+
+// squareData.start();
+// compareSquares.start();
 
 // uncomment once BETA is over
 // const tweetBannerUpdate = nodeCron.schedule('0 12 */1 * *', async () => {
