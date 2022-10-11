@@ -35,7 +35,7 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   const imageBuffer = convertImageFromArray(squares);
   const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
 
-  createImageFromBuffer(imageBuffer, '../assets/progress/' + currentTime + '.png');
+  createImageFromBuffer(imageBuffer, '../assets/progress' + currentTime + '.png');
 })
 
 module.exports = { job, saveBanner };
