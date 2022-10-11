@@ -11,6 +11,11 @@ const squareSchema = new Schema({
   owner: String
 });
 
-const Square = mongoose.model('Square', squareSchema);
+const lastUpdatedSquares = new Schema({
+  squares: [squareSchema]
+});
 
-module.exports = Square;
+const Square = mongoose.model('Square', squareSchema);
+const LastUpdatedSquares = mongoose.model('LastUpdatedSquares', lastUpdatedSquares);
+
+module.exports = { Square, LastUpdatedSquares };
