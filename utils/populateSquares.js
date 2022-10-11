@@ -1,6 +1,6 @@
 const { redisClient } = require("../cache/connect-redis");
 const { db } = require("../db/schema");
-const Square = require("../db/schema");
+const {Square} = require("../db/schema");
 
 const populateDb = async () => {
   let WIDTH = 1500;

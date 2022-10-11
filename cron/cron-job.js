@@ -1,7 +1,7 @@
 const nodeCron = require('node-cron');
 const fs = require('fs');
 const { twitterClient } = require('../api/twitter');
-const Square = require('../db/schema');
+const { Square, LastUpdate } = require('../db/schema');
 const { convertImageFromArray, createImageFromBuffer } = require('../utils/convertImage');
 const path = require('path');
 const moment = require('moment');
@@ -11,67 +11,51 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 
   const squares = await Square.find({});
 
-  
-  const imageBuffer = convertImageFromArray(squares);
-  createImageFromBuffer(imageBuffer, '../assets/banner.png');
+  const time = new Date();
+  const lastUpdate = LastUpdate.findOne({});
 
-  console.log('image created');
-  
-  const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
+  // if last update is less than 20 minutes ago, create image and tweet
 
-  try {
-    const twitterResponse = await twitterClient.v1.updateAccountProfileBanner(banner, {
-      offset_left: 0,
-      offset_top: 0,
-    })
+  if (time - lastUpdate.lastUpdate < 1200000) {
+    const imageBuffer = convertImageFromArray(squares);
+    createImageFromBuffer(imageBuffer, '../assets/banner.png');
 
-    console.log(twitterResponse);
-  } catch (error) {
-    console.log(error);
+    console.log('image created');
+    
+    const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
+
+    try {
+      const twitterResponse = await twitterClient.v1.updateAccountProfileBanner(banner, {
+        offset_left: 0,
+        offset_top: 0,
+      })
+
+      console.log(twitterResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    console.log('no changes in the last 20 minutes');
   }
 });
 
 const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   console.log('saving banner');
 
-  const squares = await Square.find({});
-  const imageBuffer = convertImageFromArray(squares);
-  const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
+  const time = new Date();
+  const lastUpdate = LastUpdate.findOne({});
 
-  createImageFromBuffer(imageBuffer, '../assets/progress' + currentTime + '.png');
+  // if last update is less than 5 minutes ago, create image and tweet
+
+  if (time - lastUpdate.lastUpdate < 300000) {
+    const squares = await Square.find({});
+    const imageBuffer = convertImageFromArray(squares);
+    const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
+  
+    createImageFromBuffer(imageBuffer, '../assets/progress' + currentTime + '.png');
+  } else {
+    console.log('no changes in the last 5 minutes');
+  }
 })
-
-// const compareSquares = nodeCron.schedule('*/2 * * * *', async () => {
-//   console.log('comparing squares');
-
-//   const squaresFromJson = fs.readFileSync(path.join(__dirname, 'squares.json'));
-//   const squaresJSON = JSON.parse(squaresFromJson);
-
-//   console.log(squaresJSON)
-// });
-
-// const squareData = nodeCron.schedule('*/1 * * * *', async () => {
-//   console.log('saving data in json');
-
-//   const squaresJson = JSON.stringify(squares);
-//   fs.writeFileSync('squares.json', squaresJson);
-// })
-
-// squareData.start();
-// compareSquares.start();
-
-// uncomment once BETA is over
-// const tweetBannerUpdate = nodeCron.schedule('0 12 */1 * *', async () => {
-//   const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
-
-//   try {
-//     await twitterClient.v1.tweet({
-//       status: `New banner update! Let's see what you come up with! Want to join? https://dancing-kitsune-2b3b6a.netlify.app/`,
-//       media_ids: [banner]
-//     })
-//   } catch(error) {
-//     console.log(error);
-//   }
-// });
 
 module.exports = { job, saveBanner };
