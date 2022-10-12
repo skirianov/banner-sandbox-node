@@ -16,6 +16,6 @@ const lastUpdatedSquares = new Schema({
 });
 
 const Square = mongoose.model('Square', squareSchema);
-const LastUpdatedSquares = mongoose.model('LastUpdatedSquares', lastUpdatedSquares);
+const LastUpdatedTime = mongoose.model('LastUpdatedTime', lastUpdatedSquares);
 
-module.exports = { Square, LastUpdatedSquares };
+module.exports = { Square, LastUpdatedTime };

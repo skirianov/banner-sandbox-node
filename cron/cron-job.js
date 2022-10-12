@@ -1,7 +1,7 @@
 const nodeCron = require('node-cron');
 const fs = require('fs');
 const { twitterClient } = require('../api/twitter');
-const {Square, LastUpdatedSquares} = require('../db/schema');
+const {Square, LastUpdatedTime} = require('../db/schema');
 const { convertImageFromArray, createImageFromBuffer } = require('../utils/convertImage');
 const path = require('path');
 const moment = require('moment');
@@ -10,21 +10,16 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
   console.log('running a task every 20 minutes');
 
   const squares = await Square.find({});
-  const lastUpdatedSquares = await LastUpdatedSquares.find({});
-  const lastUpdatedTime = lastUpdatedSquares[0].date;
+  const lastUpdateObject = await LastUpdatedTime.find();
+  const lastUpdatedTime = lastUpdateObject[0].date;
 
-  if (moment().diff(lastUpdatedTime, 'minutes') > 20) {
+  if (moment().diff(lastUpdatedTime, 'minutes') < 20) {
     const imageBuffer = convertImageFromArray(squares);
     createImageFromBuffer(imageBuffer, '../assets/banner.png');
   
     console.log('new banner created and submitted to Twitter');
     
     const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
-
-    const lastUpdatedSquares = await LastUpdatedSquares.find({});
-    lastUpdatedSquares[0].squares = squares;
-
-    await lastUpdatedSquares[0].save();
   
     try {
       const twitterResponse = await twitterClient.v1.updateAccountProfileBanner(banner, {
@@ -43,10 +38,10 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 
 const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   const squares = await Square.find({});
-  const lastUpdatedSquares = await LastUpdatedSquares.find({});
-  const lastUpdatedTime = lastUpdatedSquares[0].date;
+  const lastUpdateObject = await LastUpdatedTime.find();
+  const lastUpdatedTime = lastUpdateObject[0].date;
 
-  if (moment().diff(lastUpdatedTime, 'minutes') > 5) {
+  if (moment().diff(lastUpdatedTime, 'minutes') < 5) {
     const imageBuffer = convertImageFromArray(squares);
     const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
   

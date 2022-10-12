@@ -1,5 +1,6 @@
 const { redisClient } = require('../cache/connect-redis');
-const { Square, LastUpdatedSquares } = require('../db/schema');
+const { Square, LastUpdatedTime } = require('../db/schema');
+const moment = require('moment');
 
 const routes = require('express').Router();
 
@@ -45,13 +46,12 @@ routes.put('/squares/:id', async(req, res) => {
 
   const index = squares.findIndex(square => square.id === id);
   squares[index] = square;
-  const dateAndTime = moment().format('MMMM Do YYYY, h:mm:ss a');
 
-  LastUpdatedSquares.findOneAndReplace({}, { date: dateAndTime }, { upsert: true }, (err, doc) => {
+  LastUpdatedTime.findOneAndReplace({}, { date: moment() }, { upsert: true }, (err, doc) => {
     if (err) {
       console.log(err);
     } else {
-      console.log('LastUpdatedSquares updated');
+      console.log('Last updated time updated');
     }
   });
   
