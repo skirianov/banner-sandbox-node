@@ -30,25 +30,4 @@ app.get('/', (req,res) => {
   res.send('Hello World');
 });
 
-const tweetBanner = async () => {
-  const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
-
-  try {
-    await twitterClient.v1.tweet({
-      status: `
-      Hey there! Check out my banner for today! Want to paint something? DM me for closed Beta access!
-
-      --- automated message <3 --- `,
-      media_ids: [banner]
-    })
-
-    console.log('Daily banner tweeted');
-  } catch (error) {
-    console.log(error);
-  }
-
-}
-
-tweetBanner();
-
 server.listen(process.env.PORT, () => console.log(`Example app listening on port ${process.env.PORT || 3000}!`));
