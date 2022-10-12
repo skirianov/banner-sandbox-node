@@ -53,9 +53,21 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   }
 })
 
-// const compareSquares = nodeCron.schedule('*/2 * * * *', async () => {
-//   console.log('comparing squares');
+const tweetBannerOncePerDay = nodeCron.schedule('0 12 */1 * *', async () => {
+  const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
 
-//   const squaresFromJson = fs.readFileSync(path.join(__dirname, 'squares.json'));
+  try {
+    await twitterClient.v1.tweet({
+      status: 'Hey there! Check out my banner for today! Want to paint something? DM me for closed Beta access!',
+      media_ids: [banner]
+    })
 
-module.exports = { job, saveBanner };
+    console.log('Daily banner tweeted');
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+
+
+module.exports = { job, saveBanner, tweetBannerOncePerDay };

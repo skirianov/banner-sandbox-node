@@ -6,7 +6,7 @@ const http = require('http');
 const { CONNECT_WITH_MONGO } = require('./db/connection');
 const { CONNECT_WITH_REDIS } = require('./cache/connect-redis');
 const routes = require('./api/squares');
-const { job, saveBanner } = require('./cron/cron-job');
+const { job, saveBanner, tweetBannerOncePerDay } = require('./cron/cron-job');
 
 require('dotenv').config();
 
