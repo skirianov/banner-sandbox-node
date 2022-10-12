@@ -12,7 +12,7 @@ const squareSchema = new Schema({
 });
 
 const lastUpdatedSquares = new Schema({
-  squares: [squareSchema]
+  date: Date
 });
 
 const Square = mongoose.model('Square', squareSchema);

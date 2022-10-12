@@ -11,14 +11,9 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 
   const squares = await Square.find({});
   const lastUpdatedSquares = await LastUpdatedSquares.find({});
-  const lastUpdatedSquaresArray = lastUpdatedSquares[0].squares;
+  const lastUpdatedTime = lastUpdatedSquares[0].date;
 
-  //compare squares and lastUpdatedSquares
-  const changedSquares = squares.filter((square, index) => {
-    return square.color !== lastUpdatedSquaresArray[index].color;
-  });
-
-  if (changedSquares.length > 0) {
+  if (moment().diff(lastUpdatedTime, 'minutes') > 20) {
     const imageBuffer = convertImageFromArray(squares);
     createImageFromBuffer(imageBuffer, '../assets/banner.png');
   
@@ -49,16 +44,9 @@ const job = nodeCron.schedule('*/20 * * * *', async () => {
 const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   const squares = await Square.find({});
   const lastUpdatedSquares = await LastUpdatedSquares.find({});
-  const lastUpdatedSquaresArray = lastUpdatedSquares[0].squares;
+  const lastUpdatedTime = lastUpdatedSquares[0].date;
 
-  //compare squares and lastUpdatedSquares
-  const changedSquares = squares.filter((square, index) => {
-    return square.color !== lastUpdatedSquaresArray[index].color;
-  });
-
-  console.log(changedSquares);
-
-  if (changedSquares.length > 0) {
+  if (moment().diff(lastUpdatedTime, 'minutes') > 5) {
     const imageBuffer = convertImageFromArray(squares);
     const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
   

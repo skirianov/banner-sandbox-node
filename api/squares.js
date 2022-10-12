@@ -45,8 +45,9 @@ routes.put('/squares/:id', async(req, res) => {
 
   const index = squares.findIndex(square => square.id === id);
   squares[index] = square;
+  const dateAndTime = moment().format('MMMM Do YYYY, h:mm:ss a');
 
-  LastUpdatedSquares.findOneAndReplace({}, { squares }, { upsert: true }, (err, doc) => {
+  LastUpdatedSquares.findOneAndReplace({}, { date: dateAndTime }, { upsert: true }, (err, doc) => {
     if (err) {
       console.log(err);
     } else {
