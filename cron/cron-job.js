@@ -56,6 +56,8 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
     return square.color !== lastUpdatedSquaresArray[index].color;
   });
 
+  console.log(changedSquares);
+
   if (changedSquares.length > 0) {
     const imageBuffer = convertImageFromArray(squares);
     const currentTime = moment().format('YYYY-MM-DD-HH-mm-ss');
