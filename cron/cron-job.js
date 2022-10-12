@@ -58,7 +58,10 @@ const tweetBannerOncePerDay = nodeCron.schedule('0 12 */1 * *', async () => {
 
   try {
     await twitterClient.v1.tweet({
-      status: 'Hey there! Check out my banner for today! Want to paint something? DM me for closed Beta access!',
+      status: `
+      Hey there! Check out my banner for today! Want to paint something? DM me for closed Beta access!
+
+      --- automated message <3 --- `,
       media_ids: [banner]
     })
 
