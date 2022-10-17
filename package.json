@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "start-local": "ENV=local nodemon index.js",
     "deploy": "npm install && npm start"
   },
   "author": "",

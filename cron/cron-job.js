@@ -53,24 +53,24 @@ const saveBanner = nodeCron.schedule('*/5 * * * *', async () => {
   }
 })
 
-const tweetBannerOncePerDay = nodeCron.schedule('0 12 */1 * *', async () => {
-  const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
+// const tweetBannerOncePerDay = nodeCron.schedule('0 12 */1 * *', async () => {
+//   const banner = fs.readFileSync(path.join(__dirname, '../assets/banner.png'));
 
-  try {
-    await twitterClient.v1.tweet({
-      status: `
-      Hey there! Check out my banner for today! Want to paint something? DM me for closed Beta access!
+//   try {
+//     await twitterClient.v1.tweet({
+//       status: `
+//       Hey there! Check out my banner! Want to paint something? DM me for closed Beta access!
 
-      --- automated message <3 --- `,
-      media_ids: [banner]
-    })
+//                     --- automated message <3 ---`,
+//       media_ids: [banner]
+//     })
 
-    console.log('Daily banner tweeted');
-  } catch (error) {
-    console.log(error);
-  }
-})
+//     console.log('Daily banner tweeted');
+//   } catch (error) {
+//     console.log(error);
+//   }
+// })
 
 
 
-module.exports = { job, saveBanner, tweetBannerOncePerDay };
+module.exports = { job, saveBanner };

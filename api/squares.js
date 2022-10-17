@@ -4,22 +4,29 @@ const moment = require('moment');
 
 const routes = require('express').Router();
 
-routes.get('/squares', async(req, res) => {
+routes.get('/squares', async (req, res) => {
   let squares;
 
-  try {
+  if (process.env.ENV !== 'local') {
+    try {
+      const cachedSquares = await redisClient.get('squares');
+
+      if (cachedSquares) {
+        squares = JSON.parse(cachedSquares);
+        console.log('Serving from cache');
+      } else {
+        squares = await Square.find();
+        await redisClient.set('squares', JSON.stringify(squares));
+        console.log('Serving from database');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
     const cachedSquares = await redisClient.get('squares');
 
-    if (cachedSquares) {
-      squares = JSON.parse(cachedSquares);
-      console.log('Serving from cache');
-    } else {
-      squares = await Square.find();
-      await redisClient.set('squares', JSON.stringify(squares));
-      console.log('Serving from database');
-    }
-  } catch (error) {
-    console.log(error);
+    console.log(cachedSquares)
+    squares = JSON.parse(cachedSquares);
   }
 
   squares.forEach(each => {
@@ -29,33 +36,50 @@ routes.get('/squares', async(req, res) => {
   res.send(squares);
 });
 
-routes.put('/squares/:id', async(req, res) => {
+routes.put('/squares/:id', async (req, res) => {
   const { id } = req.params;
   const { owner, color } = req.body;
 
-  let square = await Square.findOne({ id });
+  let square;
 
-  square.old_color = color | square.color;
-  square.color = color;
-  square.owner = owner;
+  if (process.env.ENV === 'local') {
+    const cachedSquares = await redisClient.get('squares');
+    const squares = JSON.parse(cachedSquares);
 
-  await square.save();
+    square = squares.find(square => square.id === id);
 
-  const cachedSquares = await redisClient.get('squares');
-  const squares = JSON.parse(cachedSquares);
+    square.old_color = color | square.color;
+    square.color = color;
+    square.owner = owner;
 
-  const index = squares.findIndex(square => square.id === id);
-  squares[index] = square;
+    squares[index] = square;
 
-  LastUpdatedTime.findOneAndReplace({}, { date: moment() }, { upsert: true }, (err, doc) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('Last updated time updated');
-    }
-  });
-  
-  await redisClient.set('squares', JSON.stringify(squares));
+    await redisClient.set('squares', JSON.stringify(squares));
+  } else {
+    square = await Square.findOne({ id });
+
+    square.old_color = color | square.color;
+    square.color = color;
+    square.owner = owner;
+
+    await square.save();
+
+    const cachedSquares = await redisClient.get('squares');
+    const squares = JSON.parse(cachedSquares);
+
+    const index = squares.findIndex(square => square.id === id);
+    squares[index] = square;
+
+    LastUpdatedTime.findOneAndReplace({}, { date: moment() }, { upsert: true }, (err, doc) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Last updated time updated');
+      }
+    });
+
+    await redisClient.set('squares', JSON.stringify(squares));
+  }
 
   console.log('store to db and cache');
 

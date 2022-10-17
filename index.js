@@ -8,7 +8,7 @@ const path = require('path');
 const { CONNECT_WITH_MONGO } = require('./db/connection');
 const { CONNECT_WITH_REDIS } = require('./cache/connect-redis');
 const routes = require('./api/squares');
-const { job, saveBanner, tweetBannerOncePerDay } = require('./cron/cron-job');
+const { job, saveBanner } = require('./cron/cron-job');
 const { twitterClient } = require('./api/twitter');
 
 require('dotenv').config();
