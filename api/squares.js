@@ -41,10 +41,11 @@ routes.put('/squares/:id', async (req, res) => {
   const { owner, color } = req.body;
 
   let square;
+  let squares;
 
   if (process.env.ENV === 'local') {
     const cachedSquares = await redisClient.get('squares');
-    const squares = JSON.parse(cachedSquares);
+    squares = JSON.parse(cachedSquares);
 
     square = squares.find(square => square.id === id);
 
@@ -65,7 +66,7 @@ routes.put('/squares/:id', async (req, res) => {
     await square.save();
 
     const cachedSquares = await redisClient.get('squares');
-    const squares = JSON.parse(cachedSquares);
+    squares = JSON.parse(cachedSquares);
 
     const index = squares.findIndex(square => square.id === id);
     squares[index] = square;
